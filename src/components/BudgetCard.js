@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, ProgressBar } from 'react-bootstrap';
 import { currencyFormatter } from '../utils';
 
-export default function BudgetCard({ name, amount, max, gray, onAddExpenseClick }) {
+export default function BudgetCard({ name, amount, max, gray, hideButtons, onAddExpenseClick, onViewExpensesClick }) {
   const classNames = []
   if (amount > max) {
     classNames.push('bg-danger', 'bg-opacity-10')
@@ -25,18 +25,20 @@ export default function BudgetCard({ name, amount, max, gray, onAddExpenseClick 
             <div className="me-2">{name}</div>
             <div>
               {currencyFormatter.format(amount)}
-              <span className="text-muted fs-6 ms-1">
+              {max && (<span className="text-muted fs-6 ms-1">
                 / {currencyFormatter.format(max)}
-              </span>
+              </span>)}
             </div>
           </Card.Title>
-          <ProgressBar
+
+          {max && (<ProgressBar
             variant={getProgressBarVariant(amount, max)}
             min={0}
             max={max}
             now={amount}
-          />
-          <div className="p-1 m-3">
+          />)}
+
+          {!hideButtons && (<div className="p-1 m-3">
             <Button
               className="btn btn-sm m-1 px-4 bg-white text-dark"
               variant="secondary"
@@ -47,10 +49,12 @@ export default function BudgetCard({ name, amount, max, gray, onAddExpenseClick 
             <Button
               className="btn btn-sm m-1 px-4 bg-white text-dark"
               variant="outline-success"
+              onClick={onViewExpensesClick}
             >
               View Expenses
             </Button>
           </div>
+          )}
         </Card.Body>
       </Card>
     </div>

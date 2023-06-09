@@ -1,21 +1,22 @@
-
+import { useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import { Button, Stack } from 'react-bootstrap';
 import Footer from './components/Footer';
+import { UNCATEGORIZED_BUDGET_ID, useBudgets } from './context/BudgetsContext';
 import BudgetCard from './components/BudgetCard';
 import UncategorizedBudgetCard from './components/UncategorizedBudgetCard';
-import { BsCashCoin } from 'react-icons/bs';
+import TotalBudgetCard from './components/TotalBudgetCard';
 import AddBudgetModule from './components/AddBudgetModule';
 import AddExpenseModule from './components/AddExpenseModule';
-
-import { useState } from 'react';
-import { useBudgets } from './context/BudgetsContext';
+import ViewExpensesModule from './components/ViewExpensesModule';
+import { BsCashCoin } from 'react-icons/bs';
 
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [viewExpensesModuleBudgetId, setViewExpensesModalBudgetId] = useState();
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState();
   const { budgets, getBudgetExpenses } = useBudgets();
 
@@ -72,10 +73,19 @@ function App() {
                   max={budget.max}
                   gray
                   onAddExpenseClick={() => openAddExpenseModal(budget.id)}
+                  onViewExpensesClick={() =>
+                    setViewExpensesModalBudgetId(budget.id)
+                  }
                 />
-              );
+              )
             })}
-            <UncategorizedBudgetCard />
+            <UncategorizedBudgetCard
+              onAddExpenseClick={openAddExpenseModal}
+              onViewExpensesClick={() =>
+                setViewExpensesModalBudgetId(UNCATEGORIZED_BUDGET_ID)
+              }
+            />
+            <TotalBudgetCard />
           </div>
         </div>
 
@@ -92,6 +102,11 @@ function App() {
           handleClose={() => {
             setShowAddExpenseModal(false);
           }}
+        />
+
+        <ViewExpensesModule
+          budgetId={viewExpensesModuleBudgetId}
+          handleClose={() => setViewExpensesModalBudgetId()}
         />
 
         <Footer />
